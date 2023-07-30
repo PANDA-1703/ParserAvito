@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 
+prod_err = "Not found"
+
 # product = (input('Название продукта: '))
 
 url = 'https://www.avito.ru/izhevsk?q=' + 'принтер' + '&s=104'
@@ -18,13 +20,13 @@ for html in all_product_html:
     try:
         product_link = "https://www.avito.ru" + str(html.find('a', class_='iva-item-sliderLink-uLz1v').get("href"))
     except AttributeError:
-        product_link = "Not found"
+        product_link = prod_err
     links.append(product_link)
 
     try:
         product_name = html.find('h3', class_='styles-module-root-TWVKW').text.strip()
     except AttributeError:
-        product_name = "Not found"
+        product_name = prod_err
     headers.append(product_name)
 
     price_tag = html.find('strong', class_='styles-module-root-LIAav')
@@ -32,25 +34,19 @@ for html in all_product_html:
         price = price_tag.span.text.strip().replace('\xa0', '').replace('₽', '')
         prices.append(price)
     else:
-        prices.append("Not found")
+        prices.append(prod_err)
 
     try:
         product_text = html.find('div', class_='iva-item-descriptionStep-C0ty1').text.strip()
     except AttributeError:
-        product_text = "Not found"
+        product_text = prod_err
     texts.append(product_text)
 
     try:
         product_placement_date = html.find('div', class_='iva-item-dateInfoStep-_acjp').text.strip()
     except AttributeError:
-        product_placement_date = "Not found"
+        product_placement_date = prod_err
     placement_date.append(product_placement_date)
-
-# print(headers)
-# print(links)
-# print(prices)
-# print(texts)
-# print(placement_date)
 
 printers_data = []
 for i in range(len(headers)):
